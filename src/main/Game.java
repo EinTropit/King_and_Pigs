@@ -1,6 +1,8 @@
 package main;
 
 import entities.Player;
+import gamestates.Gamestate;
+import gamestates.Playing;
 import levels.LevelManager;
 
 import java.awt.*;
@@ -20,7 +22,6 @@ public class Game implements Runnable
     public static final int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
     public static final int GAME_WIDTH = TILES_IN_WIDTH * TILES_SIZE;
     public static final int GAME_HEIGHT = TILES_IN_HEIGHT * TILES_SIZE;
-
 
     private Player player;
     private LevelManager levelManager;
@@ -52,14 +53,31 @@ public class Game implements Runnable
 
     public void update()
     {
-        levelManager.update();
-        player.update();
+        switch (Gamestate.state)
+        {
+        case MENU:
+            break;
+        case PlAYING:
+            levelManager.update();
+            player.update();
+        default:
+            break;
+        }
     }
 
     public void render(Graphics g)
     {
-        levelManager.draw(g);
-        player.render(g);
+        switch (Gamestate.state)
+        {
+            case MENU:
+                break;
+            case PlAYING:
+                levelManager.draw(g);
+                player.render(g);
+            default:
+                break;
+        }
+
     }
 
     @Override
