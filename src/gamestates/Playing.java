@@ -4,6 +4,7 @@ import entities.Player;
 import levels.LevelManager;
 import main.Game;
 import ui.PauseOverlay;
+import utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,7 +15,14 @@ public class Playing extends State implements Statemethods
     private Player player;
     private LevelManager levelManager;
     private PauseOverlay pauseOverlay;
-    private boolean paused = true;
+    private boolean paused = false;
+
+    private int xLevelOffset;
+    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
+    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
+    private int lvlTilesWide = LoadSave.GetLevelData()[0].length;
+    private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
+    private int maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
 
     public Playing(Game game)
     {
@@ -47,6 +55,7 @@ public class Playing extends State implements Statemethods
         {
             levelManager.update();
             player.update();
+            checkCloseToBorder();
         }
         else
         {
@@ -54,13 +63,39 @@ public class Playing extends State implements Statemethods
         }
     }
 
+    private void checkCloseToBorder()
+    {
+        int playerX = (int) player.getHitbox().x;
+        int diff = playerX - xLevelOffset;
+
+        if(diff > rightBorder)
+        {
+            xLevelOffset += diff - rightBorder;
+        }
+        else if (diff < leftBorder)
+        {
+            xLevelOffset += diff - leftBorder;
+        }
+
+        if(xLevelOffset > maxLevelOffsetX)
+        {
+            xLevelOffset = maxLevelOffsetX;
+        }
+        else if(xLevelOffset < 0)
+        {
+            xLevelOffset = 0;
+        }
+    }
+
     @Override
     public void draw(Graphics g)
     {
-        levelManager.draw(g);
-        player.render(g);
+        levelManager.draw(g, xLevelOffset);
+        player.render(g, xLevelOffset);
         if(paused)
         {
+            g.setColor(new Color(0,0,0,150));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.draw(g);
         }
     }

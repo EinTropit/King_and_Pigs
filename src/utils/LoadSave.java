@@ -13,8 +13,8 @@ public class LoadSave
 
     public static final String PLAYER_ATLAS = "King_Human.png";
     public static final String LEVEL_ATLAS = "Terrain.png";
-    public static final String LEVEL_ONE_DATA = "level_one_data.png";
     //public static final String LEVEL_ONE_DATA = "level_one_data.png";
+    public static final String LEVEL_ONE_DATA = "level_one_data_long.png";
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BG = "menu_background.png";
     public static final String PAUSE_BG = "pause_menu.png";
@@ -49,8 +49,8 @@ public class LoadSave
 
     public static int[][] GetLevelData()
     {
-        int[][] levelData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
         BufferedImage img = getSpriteAtlas(LEVEL_ONE_DATA);
+        int[][] levelData = new int[img.getHeight()][img.getWidth()];
 
         for (int j = 0; j < img.getHeight(); j++)
         {
