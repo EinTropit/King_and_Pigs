@@ -49,6 +49,22 @@ public class Constants
         public static final int DOWN = 3;
     }
 
+    public static class images
+    {
+        public static final int PLAYER_IMAGE_DEFAULT_WIDTH = 78;
+        public static final int PLAYER_IMAGE_DEFAULT_HEIGHT = 58;
+        public static final int PLAYER_HITBOX_DEFAULT_WIDTH = 19;
+        public static final int PLAYER_HITBOX_DEFAULT_HEIGHT = 25;
+        public static final int PLAYER_HITBOX_DEFAULT_X_OFFSET = 23;
+        public static final int PLAYER_HITBOX_DEFAULT_Y_OFFSET = 19;
+
+        public static final int PIG_IMAGE_DEFAULT_WIDTH = 34;
+        public static final int PIG_IMAGE_DEFAULT_HEIGHT = 28;
+
+        public static final int KING_PIG_IMAGE_DEFAULT_WIDTH = 38;
+        public static final int KING_PIG_IMAGE_DEFAULT_HEIGHT = 28;
+    }
+
     public static class PlayerConstants
     {
         public static final int IDLE = 0;
