@@ -14,7 +14,7 @@ public class Player extends Entity
 {
 
     private BufferedImage[][] animations;
-    private int aniTick = 0, aniIndex = 0, aniSpeed = 12;
+    private int aniTick = 0, aniIndex = 0, aniSpeed = 10;
     private int playerAction = IDLE;
     private boolean moving = false, attacking = false;
     private boolean left, right, up, down, jump;
@@ -47,7 +47,7 @@ public class Player extends Entity
     public void render(Graphics g, int xLevelOffset)
     {
         g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) - xLevelOffset, (int) (hitbox.y - yDrawOffset), width, height, null);
-        //drawHitbox(g);
+        //drawHitbox(g, xLevelOffset);
     }
 
     private void updateAnimationTick()
@@ -68,7 +68,7 @@ public class Player extends Entity
     public void loadLevelData(int[][] levelData)
     {
         this.levelData = levelData;
-        if (!IsEntityNotOnFloor(hitbox, levelData))
+        if (!IsEntityOnFloor(hitbox, levelData))
         {
             inAir = true;
         }
@@ -136,7 +136,7 @@ public class Player extends Entity
 
         if (!inAir)
         {
-            if (!IsEntityNotOnFloor(hitbox, levelData))
+            if (!IsEntityOnFloor(hitbox, levelData))
             {
                 inAir = true;
             }

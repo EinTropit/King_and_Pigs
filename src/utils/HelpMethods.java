@@ -69,7 +69,7 @@ public class HelpMethods
         return currentTile * Game.TILES_SIZE;
     }
 
-    public static boolean IsEntityNotOnFloor(Rectangle2D.Float hitbox, int[][] levelData)
+    public static boolean IsEntityOnFloor(Rectangle2D.Float hitbox, int[][] levelData)
     {
         //check the pixel below the bottom left and bottom right
         if(!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData))
@@ -81,4 +81,13 @@ public class HelpMethods
         }
         return true;
     }
+
+    public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] levelData)
+    {
+
+        if(xSpeed > 0)
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, levelData);
+        return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
+    }
+
 }
