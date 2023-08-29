@@ -10,17 +10,17 @@ import static utils.HelpMethods.*;
 public class Enemy extends Entity
 {
     private int aniTick = 0, aniIndex = 0, aniSpeed = 10;
-    private int enemyAction, enemyType;
+    protected int enemyAction, enemyType;
 
-    private boolean firstUpdate = true;
+    protected boolean firstUpdate = true;
 
     // movement, jump and gravity
-    private float airSpeed = 0f;
-    private float gravity = 0.04f * Game.SCALE;
-    private float fallSpeed = 0.5f * Game.SCALE;
-    private boolean inAir = false;
-    private float enemySpeed = 0.35f * Game.SCALE;
-    private int walkDir = LEFT;
+    protected float airSpeed = 0f;
+    protected float gravity = 0.04f * Game.SCALE;
+    protected float fallSpeed = 0.5f * Game.SCALE;
+    protected boolean inAir = false;
+    protected float enemySpeed = 0.35f * Game.SCALE;
+    protected int walkDir = LEFT;
 
     public Enemy(float x, float y, int width, int height, int enemyType)
     {
@@ -29,7 +29,61 @@ public class Enemy extends Entity
         initHitbox(x, y, width, height);
     }
 
-    private void updateAnimationTick()
+    protected void firstUpdateCheck(int[][] levelData)
+    {
+        if (!IsEntityOnFloor(hitbox, levelData))
+        {
+            inAir = true;
+        }
+        firstUpdate = false;
+    }
+
+    protected void updateInAir(int[][] levelData)
+    {
+        if (CanMoveHere(hitbox.x, hitbox.y, hitbox.width, hitbox.height, levelData))
+        {
+            hitbox.y += airSpeed;
+            airSpeed += gravity;
+        } else
+        {
+            inAir = false;
+            hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, fallSpeed);
+        }
+    }
+
+    protected void move(int[][] levelData)
+    {
+        float xSpeed = 0;
+        if(walkDir == LEFT)
+        {
+            xSpeed = -enemySpeed;
+        }
+        else
+        {
+            xSpeed = enemySpeed;
+        }
+
+        if(CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData))
+        {
+            if(IsFloor(hitbox, xSpeed, levelData))
+            {
+                hitbox.x += xSpeed;
+                return;
+            }
+        }
+
+        changeWalkDir();
+    }
+
+    protected void newAction(int enemyAction)
+    {
+        this.enemyAction = enemyAction;
+        aniIndex = 0;
+        aniTick = 0;
+    }
+
+
+    protected void updateAnimationTick()
     {
         aniTick++;
         if (aniTick >= aniSpeed)
@@ -44,73 +98,8 @@ public class Enemy extends Entity
         }
     }
 
-    public void update(int[][] levelData)
-    {
-        updatePos(levelData);
-        updateAnimationTick();
-        //setAnimation();
-    }
 
-    private void updatePos(int[][] levelData)
-    {
-        if (firstUpdate)
-        {
-            if (!IsEntityOnFloor(hitbox, levelData))
-            {
-                inAir = true;
-            }
-            firstUpdate = false;
-        }
-
-        if (inAir)
-        {
-            if (CanMoveHere(hitbox.x, hitbox.y, hitbox.width, hitbox.height, levelData))
-            {
-                hitbox.y += airSpeed;
-                airSpeed += gravity;
-            } else
-            {
-                inAir = false;
-                hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, fallSpeed);
-            }
-        } else
-        {
-            switch (enemyAction)
-            {
-                case IDLE:
-                    enemyAction = RUN;
-                    break;
-                case RUN:
-                    float xSpeed = 0;
-                    if(walkDir == LEFT)
-                    {
-                        xSpeed = -enemySpeed;
-                    }
-                    else
-                    {
-                        xSpeed = enemySpeed;
-                    }
-
-                    if(CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData))
-                    {
-                        if(IsFloor(hitbox, xSpeed, levelData))
-                        {
-                            hitbox.x += xSpeed;
-                            return;
-                        }
-                    }
-
-                    changeWalkDir();
-
-                    break;
-                default:
-                    break;
-
-            }
-        }
-    }
-
-    private void changeWalkDir()
+    protected void changeWalkDir()
     {
         if(walkDir == LEFT)
         {
