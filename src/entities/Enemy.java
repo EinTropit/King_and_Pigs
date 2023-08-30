@@ -21,6 +21,8 @@ public class Enemy extends Entity
     protected boolean inAir = false;
     protected float enemySpeed = 0.35f * Game.SCALE;
     protected int walkDir = LEFT;
+    protected int tileY;
+    protected float attackDistance = Game.TILES_SIZE;
 
     public Enemy(float x, float y, int width, int height, int enemyType)
     {
@@ -48,24 +50,63 @@ public class Enemy extends Entity
         {
             inAir = false;
             hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, fallSpeed);
+            tileY = (int) (hitbox.y / Game.TILES_SIZE);
         }
+    }
+
+    protected void turnTowardsPlayer(Player player)
+    {
+        if (player.hitbox.x > hitbox.x)
+        {
+            walkDir = RIGHT;
+        } else
+        {
+            walkDir = LEFT;
+        }
+    }
+
+    protected boolean canSeePlayer(int[][] levelData, Player player)
+    {
+        int playerTileY = (int) (player.hitbox.y / Game.TILES_SIZE);
+        if (playerTileY == tileY)
+        {
+            if (isPlayerInRange(player))
+            {
+                if (IsSightClear(levelData, hitbox, player.hitbox, tileY))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean isPlayerInRange(Player player)
+    {
+        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        return absValue <= attackDistance * 5;
+    }
+
+    protected boolean isPlayerCloseToAttack(Player player)
+    {
+        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        return absValue <= attackDistance;
     }
 
     protected void move(int[][] levelData)
     {
         float xSpeed = 0;
-        if(walkDir == LEFT)
+        if (walkDir == LEFT)
         {
             xSpeed = -enemySpeed;
-        }
-        else
+        } else
         {
             xSpeed = enemySpeed;
         }
 
-        if(CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData))
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData))
         {
-            if(IsFloor(hitbox, xSpeed, levelData))
+            if (IsFloor(hitbox, xSpeed, levelData))
             {
                 hitbox.x += xSpeed;
                 return;
@@ -93,7 +134,10 @@ public class Enemy extends Entity
             if (aniIndex >= GetSpriteAmount(enemyType, enemyAction))
             {
                 aniIndex = 0;
-                //attacking = false;
+                if(enemyAction == ATTACK)
+                {
+                    enemyAction = IDLE;
+                }
             }
         }
     }
@@ -101,11 +145,10 @@ public class Enemy extends Entity
 
     protected void changeWalkDir()
     {
-        if(walkDir == LEFT)
+        if (walkDir == LEFT)
         {
             walkDir = RIGHT;
-        }
-        else
+        } else
             walkDir = LEFT;
     }
 

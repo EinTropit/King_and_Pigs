@@ -22,11 +22,11 @@ public class EnemyManager
         addEnemies();
     }
 
-    public void update(int[][] levelData)
+    public void update(int[][] levelData, Player player)
     {
         for(Pig p : pigs)
         {
-            p.update(levelData);
+            p.update(levelData, player);
         }
     }
 

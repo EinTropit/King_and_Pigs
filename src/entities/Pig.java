@@ -15,13 +15,13 @@ public class Pig extends Enemy
         initHitbox(x, y, (int) (14 * Game.SCALE), (int) (15 * Game.SCALE));
     }
 
-    public void update(int[][] levelData)
+    public void update(int[][] levelData, Player player)
     {
-        updatePos(levelData);
+        updatePos(levelData, player);
         updateAnimationTick();
     }
 
-    private void updatePos(int[][] levelData)
+    private void updatePos(int[][] levelData, Player player)
     {
         if (firstUpdate)
         {
@@ -39,6 +39,14 @@ public class Pig extends Enemy
                     newAction(RUN);
                     break;
                 case RUN:
+                    if(canSeePlayer(levelData, player))
+                    {
+                        turnTowardsPlayer(player);
+                    }
+                    if(isPlayerCloseToAttack(player))
+                    {
+                        newAction(ATTACK);
+                    }
                    move(levelData);
 
                     break;
