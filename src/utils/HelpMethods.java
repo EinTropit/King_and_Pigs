@@ -1,8 +1,14 @@
 package utils;
 
+import entities.Pig;
 import main.Game;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import static utils.Constants.EnemyConstants.PIG;
 
 public class HelpMethods
 {
@@ -120,5 +126,59 @@ public class HelpMethods
 
 
         return true;
+    }
+
+    public static int[][] GetLevelData(BufferedImage image)
+    {
+        int[][] levelData = new int[image.getHeight()][image.getWidth()];
+
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getRed();
+                if (value > 8 * 12)
+                    value = 0;
+                levelData[j][i] = value;
+
+            }
+        }
+        return levelData;
+    }
+
+    public static ArrayList<Pig> GetPigs(BufferedImage image)
+    {
+        ArrayList<Pig> list = new ArrayList<>();
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == PIG)
+                {
+                    list.add(new Pig(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static Point GetPlayerSpawn(BufferedImage image)
+    {
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == 100)
+                {
+                    return new Point(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+                }
+            }
+        }
+        return new Point(1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
     }
 }

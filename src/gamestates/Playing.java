@@ -27,17 +27,34 @@ public class Playing extends State implements Statemethods
     private int xLevelOffset;
     private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
     private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-    private int lvlTilesWide = LoadSave.GetLevelData()[0].length;
-    private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
-    private int maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
-
+    private int maxLevelOffsetX;
     private boolean gameOver = false;
-    private boolean levelCompleted = true;
+    private boolean levelCompleted = false;
 
     public Playing(Game game)
     {
         super(game);
         initGameClasses();
+
+        calculateLevelOffset();
+        loadStartLevel();
+    }
+
+    public void loadNextLevel()
+    {
+        resetAll();
+        levelManager.loadNextLevel();
+        player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+    }
+
+    private void loadStartLevel()
+    {
+        enemyManager.loadEnemies(levelManager.getCurrentLevel());
+    }
+
+    private void calculateLevelOffset()
+    {
+        maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
     }
 
     private void initGameClasses()
@@ -46,6 +63,7 @@ public class Playing extends State implements Statemethods
         enemyManager = new EnemyManager(this);
         player = new Player(200, 200, (int) (78 * Game.SCALE), (int) (58 * Game.SCALE), this);
         player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
+        player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
         levelCompletedOverlay = new LevelCompletedOverlay(this);
@@ -65,6 +83,7 @@ public class Playing extends State implements Statemethods
     {
         gameOver = false;
         paused = false;
+        levelCompleted = false;
         player.resetAll();
         enemyManager.resetAllEnemies();
     }
@@ -267,5 +286,20 @@ public class Playing extends State implements Statemethods
                 pauseOverlay.mouseDragged(e);
             }
         }
+    }
+
+    public EnemyManager getEnemyManager()
+    {
+        return enemyManager;
+    }
+
+    public void setMaxLevelOffset(int levelOffset)
+    {
+        maxLevelOffsetX = levelOffset;
+    }
+
+    public void setLevelCompleted(boolean levelCompleted)
+    {
+        this.levelCompleted = levelCompleted;
     }
 }

@@ -67,6 +67,14 @@ public class Player extends Entity
         initAttackBox();
     }
 
+    public void setSpawn(Point spawn)
+    {
+        this.x = spawn.x;
+        this.y = spawn.y;
+        hitbox.x = x;
+        hitbox.y = y;
+    }
+
     private void initAttackBox()
     {
         attackBox = new Rectangle2D.Float(x, y, (int) (20 * Game.SCALE), (int) (20 * Game.SCALE));
@@ -305,7 +313,7 @@ public class Player extends Entity
 
     private void loadAnimations()
     {
-        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_ATLAS);
+        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
         animations = new BufferedImage[10][11];
 
@@ -317,7 +325,7 @@ public class Player extends Entity
             }
         }
 
-        statusBarImage = LoadSave.getSpriteAtlas(LoadSave.STATUS_BAR);
+        statusBarImage = LoadSave.GetSpriteAtlas(LoadSave.STATUS_BAR);
     }
 
     public boolean isLeft()

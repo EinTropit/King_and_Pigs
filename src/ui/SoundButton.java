@@ -22,7 +22,7 @@ public class SoundButton extends PauseButton
 
     private void loadImages()
     {
-        BufferedImage temp = LoadSave.getSpriteAtlas(LoadSave.SOUND_BUTTONS);
+        BufferedImage temp = LoadSave.GetSpriteAtlas(LoadSave.SOUND_BUTTONS);
         soundImgs = new BufferedImage[2][3];
         for (int j = 0; j < soundImgs.length; j++)
         {

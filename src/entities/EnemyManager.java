@@ -1,6 +1,7 @@
 package entities;
 
 import gamestates.Playing;
+import levels.Level;
 import utils.LoadSave;
 
 import java.awt.Graphics;
@@ -20,17 +21,22 @@ public class EnemyManager
     {
         this.playing = playing;
         loadAnimations();
-        addEnemies();
     }
 
     public void update(int[][] levelData, Player player)
     {
+        boolean isAnyActive = false;
         for(Pig p : pigs)
         {
             if(p.isActive())
             {
                 p.update(levelData, player);
+                isAnyActive = true;
             }
+        }
+        if(!isAnyActive)
+        {
+            playing.setLevelCompleted(true);
         }
     }
 
@@ -39,10 +45,10 @@ public class EnemyManager
         drawPigs(g, xLevelOffset);
     }
 
-    private void addEnemies()
+    public void loadEnemies(Level level)
     {
-        pigs = LoadSave.GetPigs();
-        System.out.println("size of pigs: " + pigs.size());
+        pigs = level.getPigs();
+
     }
 
     private void drawPigs(Graphics g, int xLevelOffset)
@@ -79,7 +85,7 @@ public class EnemyManager
 
     private void loadAnimations()
     {
-        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.PIG_ATLAS);
+        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PIG_ATLAS);
 
         pigAnimations = new BufferedImage[8][11];
 

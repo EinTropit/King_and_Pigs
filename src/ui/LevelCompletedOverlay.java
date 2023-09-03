@@ -37,7 +37,7 @@ public class LevelCompletedOverlay
 
     private void loadBackground()
     {
-        backgroundImg = LoadSave.getSpriteAtlas(LoadSave.COMPLETED_BG);
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.COMPLETED_BG);
         bgW = (int) (backgroundImg.getWidth() * Game.SCALE);
         bgH = (int) (backgroundImg.getHeight() * Game.SCALE);
         bgX = Game.GAME_WIDTH / 2 - bgW / 2;
@@ -79,6 +79,7 @@ public class LevelCompletedOverlay
         {
             if(menuButton.isMousePressed())
             {
+                playing.resetAll();
                 Gamestate.state = Gamestate.MENU;
                 playing.unpauseGame();
             }
@@ -87,7 +88,7 @@ public class LevelCompletedOverlay
         {
             if(nextButton.isMousePressed())
             {
-                System.out.println("next");
+                playing.loadNextLevel();
             }
         }
 
