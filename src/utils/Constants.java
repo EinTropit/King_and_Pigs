@@ -151,5 +151,28 @@ public class Constants
                 return 0;
             }
         }
+
+        public static int GetEnemyMaxHealth(int enemyType)
+        {
+            switch (enemyType)
+            {
+                case PIG:
+                    return 10;
+                default:
+                    return 0;
+            }
+        }
+
+        public static int GetEnemyDamage(int enemyType)
+        {
+            switch (enemyType)
+            {
+                case PIG:
+                    return 15;
+                default:
+                    return 0;
+            }
+        }
+
     }
 }

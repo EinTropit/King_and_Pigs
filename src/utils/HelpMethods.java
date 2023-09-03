@@ -104,6 +104,10 @@ public class HelpMethods
 
         for (int i = 0; i < Math.abs(xTile1 - xTile2); i++)
         {
+            if(xTile + i >= Game.TILES_IN_WIDTH)
+            {
+                break;
+            }
             if(IsTileSolid(xTile + i, yTile, levelData))
             {
                 return false;

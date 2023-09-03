@@ -3,13 +3,16 @@ package entities;
 import main.Game;
 
 
+import java.awt.geom.Rectangle2D;
+
 import static utils.Constants.EnemyConstants.*;
 import static utils.Constants.Directions.*;
+import static utils.Constants.PlayerConstants.IDLE;
 import static utils.HelpMethods.*;
 
 public class Enemy extends Entity
 {
-    private int aniTick = 0, aniIndex = 0, aniSpeed = 10;
+    protected int aniTick = 0, aniIndex = 0, aniSpeed = 10;
     protected int enemyAction, enemyType;
 
     protected boolean firstUpdate = true;
@@ -17,18 +20,25 @@ public class Enemy extends Entity
     // movement, jump and gravity
     protected float airSpeed = 0f;
     protected float gravity = 0.04f * Game.SCALE;
-    protected float fallSpeed = 0.5f * Game.SCALE;
     protected boolean inAir = false;
     protected float enemySpeed = 0.35f * Game.SCALE;
     protected int walkDir = LEFT;
     protected int tileY;
     protected float attackDistance = Game.TILES_SIZE;
 
+    protected int maxHealth;
+    protected int currentHealth;
+    protected boolean active = true;
+    protected boolean attackChecked;
+
+
     public Enemy(float x, float y, int width, int height, int enemyType)
     {
         super(x, y, width, height);
         this.enemyType = enemyType;
         initHitbox(x, y, width, height);
+        maxHealth = GetEnemyMaxHealth(enemyType);
+        currentHealth = maxHealth;
     }
 
     protected void firstUpdateCheck(int[][] levelData)
@@ -49,7 +59,7 @@ public class Enemy extends Entity
         } else
         {
             inAir = false;
-            hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, fallSpeed);
+            hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
             tileY = (int) (hitbox.y / Game.TILES_SIZE);
         }
     }
@@ -123,6 +133,26 @@ public class Enemy extends Entity
         aniTick = 0;
     }
 
+    public void hurt(int amount)
+    {
+        currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            newAction(DEATH);
+        } else
+        {
+            newAction(HIT);
+        }
+    }
+
+    protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player)
+    {
+        if(attackBox.intersects(player.hitbox))
+        {
+            player.changeHealth(-GetEnemyDamage(enemyType));
+        }
+        attackChecked = true;
+    }
 
     protected void updateAnimationTick()
     {
@@ -134,9 +164,11 @@ public class Enemy extends Entity
             if (aniIndex >= GetSpriteAmount(enemyType, enemyAction))
             {
                 aniIndex = 0;
-                if(enemyAction == ATTACK)
+
+                switch (enemyAction)
                 {
-                    enemyAction = IDLE;
+                    case ATTACK,HIT -> enemyAction = IDLE;
+                    case DEATH -> active = false;
                 }
             }
         }
@@ -160,5 +192,21 @@ public class Enemy extends Entity
     public int getEnemyAction()
     {
         return enemyAction;
+    }
+
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    public void resetEnemy()
+    {
+        hitbox.x = x;
+        hitbox.y = y;
+        firstUpdate = true;
+        currentHealth = maxHealth;
+        newAction(IDLE);
+        active = true;
+        airSpeed = 0;
     }
 }

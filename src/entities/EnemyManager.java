@@ -4,6 +4,7 @@ import gamestates.Playing;
 import utils.LoadSave;
 
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -26,7 +27,10 @@ public class EnemyManager
     {
         for(Pig p : pigs)
         {
-            p.update(levelData, player);
+            if(p.isActive())
+            {
+                p.update(levelData, player);
+            }
         }
     }
 
@@ -45,8 +49,30 @@ public class EnemyManager
     {
         for(Pig p : pigs)
         {
-            g.drawImage(pigAnimations[p.getEnemyAction()][p.getAniIndex()], (int) p.getHitbox().x - xLevelOffset - PIG_DRAW_OFFSET_X, (int) p.getHitbox().y - PIG_DRAW_OFFSET_Y, PIG_IMAGE_WIDTH, PIG_IMAGE_HEIGHT, null);
-            p.drawHitbox(g, xLevelOffset);
+            if(p.isActive())
+            {
+                g.drawImage(pigAnimations[p.getEnemyAction()][p.getAniIndex()],
+                        (int) p.getHitbox().x - xLevelOffset - PIG_DRAW_OFFSET_X + p.flipX(),
+                        (int) p.getHitbox().y - PIG_DRAW_OFFSET_Y, PIG_IMAGE_WIDTH * p.flipW(),
+                        PIG_IMAGE_HEIGHT, null);
+                p.drawHitbox(g, xLevelOffset);
+                p.drawAttackBox(g, xLevelOffset);
+            }
+        }
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox)
+    {
+        for(Pig p : pigs)
+        {
+            if(p.isActive())
+            {
+                if (attackBox.intersects(p.getHitbox()))
+                {
+                    p.hurt(10);
+                    return;
+                }
+            }
         }
     }
 
@@ -63,6 +89,14 @@ public class EnemyManager
             {
                 pigAnimations[j][i] = img.getSubimage(i * PIG_IMAGE_DEFAULT_WIDTH, j * PIG_IMAGE_DEFAULT_HEIGHT, PIG_IMAGE_DEFAULT_WIDTH, PIG_IMAGE_DEFAULT_HEIGHT);
             }
+        }
+    }
+
+    public void resetAllEnemies()
+    {
+        for(Pig p : pigs)
+        {
+            p.resetEnemy();
         }
     }
 }

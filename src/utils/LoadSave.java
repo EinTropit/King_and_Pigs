@@ -28,6 +28,9 @@ public class LoadSave
     public static final String URM_BUTTONS = "urm_buttons.png";
     public static final String VOLUME_BUTTONS = "volume_buttons.png";
     public static final String PIG_ATLAS = "pig.png";
+    public static final String STATUS_BAR = "health_power_bar.png";
+    public static final String COMPLETED_BG = "completed_menu.png";
+
 
 
     public static BufferedImage getSpriteAtlas(String fileName)
