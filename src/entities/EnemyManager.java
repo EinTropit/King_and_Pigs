@@ -2,6 +2,7 @@ package entities;
 
 import gamestates.Playing;
 import levels.Level;
+import main.Game;
 import utils.LoadSave;
 
 import java.awt.Graphics;
@@ -57,7 +58,7 @@ public class EnemyManager
         {
             if(p.isActive())
             {
-                g.drawImage(pigAnimations[p.getEnemyAction()][p.getAniIndex()],
+                g.drawImage(pigAnimations[p.getAction()][p.getAniIndex()],
                         (int) p.getHitbox().x - xLevelOffset - PIG_DRAW_OFFSET_X + p.flipX(),
                         (int) p.getHitbox().y - PIG_DRAW_OFFSET_Y, PIG_IMAGE_WIDTH * p.flipW(),
                         PIG_IMAGE_HEIGHT, null);

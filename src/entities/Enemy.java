@@ -2,32 +2,22 @@ package entities;
 
 import main.Game;
 
-
 import java.awt.geom.Rectangle2D;
 
+import static utils.Constants.ANIMATION_SPEED;
 import static utils.Constants.EnemyConstants.*;
 import static utils.Constants.Directions.*;
+import static utils.Constants.GRAVITY;
 import static utils.Constants.PlayerConstants.IDLE;
 import static utils.HelpMethods.*;
 
 public class Enemy extends Entity
 {
-    protected int aniTick = 0, aniIndex = 0, aniSpeed = 10;
-    protected int enemyAction, enemyType;
-
+    protected int enemyType;
     protected boolean firstUpdate = true;
-
-    // movement, jump and gravity
-    protected float airSpeed = 0f;
-    protected float gravity = 0.04f * Game.SCALE;
-    protected boolean inAir = false;
-    protected float enemySpeed = 0.35f * Game.SCALE;
     protected int walkDir = LEFT;
     protected int tileY;
     protected float attackDistance = Game.TILES_SIZE;
-
-    protected int maxHealth;
-    protected int currentHealth;
     protected boolean active = true;
     protected boolean attackChecked;
 
@@ -36,7 +26,8 @@ public class Enemy extends Entity
     {
         super(x, y, width, height);
         this.enemyType = enemyType;
-        initHitbox(x, y, width, height);
+        this.action = IDLE;
+        walkSpeed = 0.35f * Game.SCALE;
         maxHealth = GetEnemyMaxHealth(enemyType);
         currentHealth = maxHealth;
     }
@@ -55,7 +46,7 @@ public class Enemy extends Entity
         if (CanMoveHere(hitbox.x, hitbox.y, hitbox.width, hitbox.height, levelData))
         {
             hitbox.y += airSpeed;
-            airSpeed += gravity;
+            airSpeed += GRAVITY;
         } else
         {
             inAir = false;
@@ -108,10 +99,10 @@ public class Enemy extends Entity
         float xSpeed = 0;
         if (walkDir == LEFT)
         {
-            xSpeed = -enemySpeed;
+            xSpeed = -walkSpeed;
         } else
         {
-            xSpeed = enemySpeed;
+            xSpeed = walkSpeed;
         }
 
         if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData))
@@ -128,7 +119,7 @@ public class Enemy extends Entity
 
     protected void newAction(int enemyAction)
     {
-        this.enemyAction = enemyAction;
+        this.action = enemyAction;
         aniIndex = 0;
         aniTick = 0;
     }
@@ -157,17 +148,17 @@ public class Enemy extends Entity
     protected void updateAnimationTick()
     {
         aniTick++;
-        if (aniTick >= aniSpeed)
+        if (aniTick >= ANIMATION_SPEED)
         {
             aniTick = 0;
             aniIndex++;
-            if (aniIndex >= GetSpriteAmount(enemyType, enemyAction))
+            if (aniIndex >= GetSpriteAmount(enemyType, action))
             {
                 aniIndex = 0;
 
-                switch (enemyAction)
+                switch (action)
                 {
-                    case ATTACK,HIT -> enemyAction = IDLE;
+                    case ATTACK,HIT -> action = IDLE;
                     case DEATH -> active = false;
                 }
             }
@@ -182,16 +173,6 @@ public class Enemy extends Entity
             walkDir = RIGHT;
         } else
             walkDir = LEFT;
-    }
-
-    public int getAniIndex()
-    {
-        return aniIndex;
-    }
-
-    public int getEnemyAction()
-    {
-        return enemyAction;
     }
 
     public boolean isActive()

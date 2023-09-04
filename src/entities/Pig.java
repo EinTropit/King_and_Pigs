@@ -12,14 +12,12 @@ import static utils.Constants.EnemyConstants.*;
 public class Pig extends Enemy
 {
 
-    // attack box
-    private Rectangle2D.Float attackBox;
     private int attackBoxOffsetX;
 
     public Pig(float x, float y)
     {
         super(x, y, PIG_IMAGE_WIDTH, PIG_IMAGE_HEIGHT, PIG);
-        initHitbox(x, y, (int) (14 * Game.SCALE), (int) (15 * Game.SCALE));
+        initHitbox(14, 15);
         initAttackBox();
     }
 
@@ -49,11 +47,6 @@ public class Pig extends Enemy
         attackBox.y = hitbox.y - (13 * Game.SCALE);
     }
 
-    public void drawAttackBox(Graphics g, int xLevelOffset)
-    {
-        g.setColor(Color.red);
-        g.drawRect((int) attackBox.x - xLevelOffset, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
-    }
 
     public int flipX()
     {
@@ -85,7 +78,7 @@ public class Pig extends Enemy
             updateInAir(levelData);
         } else
         {
-            switch (enemyAction)
+            switch (action)
             {
                 case IDLE:
                     newAction(RUN);
