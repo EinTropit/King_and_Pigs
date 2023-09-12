@@ -30,7 +30,8 @@ public class LoadSave
     public static final String PIG_ATLAS = "pig.png";
     public static final String STATUS_BAR = "health_power_bar.png";
     public static final String COMPLETED_BG = "completed_menu.png";
-
+    public static final String BOX_ATLAS = "box.png";
+    public static final String LIVES_AND_DIAMONDS = "lives_and_diamonds.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName)
     {

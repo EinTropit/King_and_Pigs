@@ -2,6 +2,9 @@ package levels;
 
 import entities.Pig;
 import main.Game;
+import objects.Box;
+import objects.Diamond;
+import utils.HelpMethods;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,6 +17,8 @@ public class Level
     private BufferedImage levelImage;
     private int[][] levelData;
     private ArrayList<Pig> pigs;
+    private ArrayList<Box> boxes;
+    private ArrayList<Diamond> diamonds;
 
     private int levelTilesWide;
     private int maxTilesOffset;
@@ -25,8 +30,20 @@ public class Level
         this.levelImage = levelImage;
         createLevelData();
         createEnemies();
+        createBoxes();
+        createDiamonds();
         calculateLevelOffsetX();
         calculatePlayerSpawn();
+    }
+
+    private void createDiamonds()
+    {
+        diamonds = HelpMethods.GetDiamonds(levelImage);
+    }
+
+    private void createBoxes()
+    {
+        boxes = HelpMethods.GetBoxes(levelImage);
     }
 
     private void calculatePlayerSpawn()
@@ -75,5 +92,15 @@ public class Level
     public Point getPlayerSpawn()
     {
         return playerSpawn;
+    }
+
+    public ArrayList<Box> getBoxes()
+    {
+        return boxes;
+    }
+
+    public ArrayList<Diamond> getDiamonds()
+    {
+        return diamonds;
     }
 }

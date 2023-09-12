@@ -89,12 +89,21 @@ public class Player extends Entity
         updateAttackBox();
 
         updatePos();
+        if(moving)
+        {
+            checkDiamondTouched();
+        }
         if(attacking)
         {
             checkAttack();
         }
         updateAnimationTick();
         setAnimation();
+    }
+
+    private void checkDiamondTouched()
+    {
+        playing.checkDiamondTouched(hitbox);
     }
 
     private void checkAttack()
@@ -105,6 +114,7 @@ public class Player extends Entity
         }
         attackChecked = true;
         playing.checkEnemyHit(attackBox);
+        playing.checkObjectHit(attackBox);
 
     }
 
@@ -375,6 +385,11 @@ public class Player extends Entity
         {
             inAir = true;
         }
+    }
+
+    public void changeScore()
+    {
+        System.out.println("added Score!");
     }
 }
 

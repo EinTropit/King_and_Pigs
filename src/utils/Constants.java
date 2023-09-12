@@ -8,6 +8,53 @@ public class Constants
     public static final float GRAVITY = 0.04f * Game.SCALE;
     public static final float ANIMATION_SPEED = 10;
 
+    public static class ObjectConstants
+    {
+        public static final int BIG_DIAMOND = 0;
+        public static final int BIG_DIAMOND_HIT = 1;
+        public static final int SMALL_DIAMOND = 7; //TODO: change back with box
+        public static final int BIG_HEART = 3;
+        public static final int BIG_HEART_HIT = 4;
+        public static final int SMALL_HEART = 5;
+        public static final int SMALL_HEART_HIT = 6;
+        public static final int BOX = 2;
+
+        public static final int DNH_IMAGE_DEFAULT_WIDTH = 18;
+        public static final int DNH_IMAGE_DEFAULT_HEIGHT = 14;
+        public static final int DNH_IMAGE_WIDTH = (int) (DNH_IMAGE_DEFAULT_WIDTH * Game.SCALE);
+        public static final int DNH_IMAGE_HEIGHT = (int) (DNH_IMAGE_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int DIAMOND_DRAW_OFFSET_X = (int) (5 * Game.SCALE);
+        public static final int DIAMOND_DRAW_OFFSET_Y = (int) (2 * Game.SCALE);
+
+        public static final int BOX_IMAGE_DEFAULT_WIDTH = 40;
+        public static final int BOX_IMAGE_DEFAULT_HEIGHT = 30;
+        public static final int BOX_IMAGE_WIDTH = (int) (BOX_IMAGE_DEFAULT_WIDTH * Game.SCALE);
+        public static final int BOX_IMAGE_HEIGHT = (int) (BOX_IMAGE_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int BOX_DRAW_OFFSET_X = (int) (9 * Game.SCALE);
+        public static final int BOX_DRAW_OFFSET_Y = (int) (14 * Game.SCALE);
+
+        public static int GetSpriteAmount(int objectType)
+        {
+            switch (objectType)
+            {
+                case BIG_DIAMOND:
+                    return 10;
+
+                case SMALL_DIAMOND:
+                case BIG_HEART:
+                case SMALL_HEART:
+                case BOX:
+                    return 8;
+                case BIG_HEART_HIT:
+                case BIG_DIAMOND_HIT:
+                case SMALL_HEART_HIT:
+                    return 2;
+                default:
+                    return 1;
+            }
+        }
+    }
+
     public static class UI
     {
         public static class MenuButtons

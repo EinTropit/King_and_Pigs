@@ -2,6 +2,8 @@ package utils;
 
 import entities.Pig;
 import main.Game;
+import objects.Box;
+import objects.Diamond;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -9,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static utils.Constants.EnemyConstants.PIG;
+import static utils.Constants.ObjectConstants.*;
 
 public class HelpMethods
 {
@@ -159,6 +162,42 @@ public class HelpMethods
                 if (value == PIG)
                 {
                     list.add(new Pig(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Box> GetBoxes(BufferedImage image)
+    {
+        ArrayList<Box> list = new ArrayList<>();
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == BOX)
+                {
+                    list.add(new Box(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Diamond> GetDiamonds(BufferedImage image)
+    {
+        ArrayList<Diamond> list = new ArrayList<>();
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == BIG_DIAMOND)
+                {
+                    list.add(new Diamond(i * Game.TILES_SIZE, j * Game.TILES_SIZE, BIG_DIAMOND));
                 }
             }
         }
