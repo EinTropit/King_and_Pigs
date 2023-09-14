@@ -1,5 +1,6 @@
 package objects;
 
+import entities.Player;
 import gamestates.Playing;
 import levels.Level;
 import utils.LoadSave;
@@ -15,29 +16,36 @@ public class ObjectManager
 {
     private Playing playing;
     private BufferedImage[][] DNHAnimations;
-    private BufferedImage[] BoxAnimations;
+    private BufferedImage[] boxAnimations;
+    private BufferedImage spikeImage;
     private ArrayList<Diamond> diamonds;
     private ArrayList<Box> boxes;
+    private ArrayList<Spike> spikes;
 
     public ObjectManager(Playing playing)
     {
         this.playing = playing;
         loadAnimations();
+    }
 
-        diamonds = new ArrayList<>();
-        boxes = new ArrayList<>();
-
-        diamonds.add(new Diamond(300,300,BIG_DIAMOND));
-        boxes.add(new Box(500, 300));
+    public void checkSpikesTouched(Player p)
+    {
+        for (Spike s : spikes)
+        {
+            if (p.getHitbox().intersects(s.getHitbox()))
+            {
+                p.kill();
+            }
+        }
     }
 
     public void checkObjectTouched(Rectangle2D.Float hitbox)
     {
-        for(Diamond d : diamonds)
+        for (Diamond d : diamonds)
         {
-            if(d.isActive())
+            if (d.isActive())
             {
-                if(hitbox.intersects(d.getHitbox()))
+                if (hitbox.intersects(d.getHitbox()))
                 {
                     d.setActive(false);
                     applyEffectToPlayer(d);
@@ -53,14 +61,14 @@ public class ObjectManager
 
     public void checkObjectHit(Rectangle2D.Float attackbox)
     {
-        for(Box b : boxes)
+        for (Box b : boxes)
         {
-            if(b.isActive() && b.getAniIndex() == 0)
+            if (b.isActive() && !b.doAnimation)
             {
-                if(b.getHitbox().intersects(attackbox))
+                if (b.getHitbox().intersects(attackbox))
                 {
                     b.setAnimation(true);
-                    diamonds.add(new Diamond((int)(b.getHitbox().x - b.xDrawOffset / 2), (int)(b.getHitbox().y - b.getHitbox().height), BIG_DIAMOND));
+                    diamonds.add(new Diamond((int) (b.getHitbox().x - b.xDrawOffset / 2), (int) (b.getHitbox().y - b.getHitbox().height), BIG_DIAMOND));
                     return;
                 }
             }
@@ -81,30 +89,32 @@ public class ObjectManager
         }
 
         BufferedImage BoxSprite = LoadSave.GetSpriteAtlas(LoadSave.BOX_ATLAS);
-        BoxAnimations = new BufferedImage[8];
+        boxAnimations = new BufferedImage[8];
 
-        for (int j = 0; j < BoxAnimations.length; j++)
+        for (int j = 0; j < boxAnimations.length; j++)
         {
-            BoxAnimations[j] = BoxSprite.getSubimage(j * BOX_IMAGE_DEFAULT_WIDTH, 0, BOX_IMAGE_DEFAULT_WIDTH, BOX_IMAGE_DEFAULT_HEIGHT);
+            boxAnimations[j] = BoxSprite.getSubimage(j * BOX_IMAGE_DEFAULT_WIDTH, 0, BOX_IMAGE_DEFAULT_WIDTH, BOX_IMAGE_DEFAULT_HEIGHT);
         }
+
+        spikeImage = LoadSave.GetSpriteAtlas(LoadSave.SPIKE_ATLAS);
     }
 
     public void update()
     {
-        for(Diamond d : diamonds)
+        for (Diamond d : diamonds)
         {
-            if(d.isActive())
+            if (d.isActive())
             {
                 d.update();
             }
         }
-        for(Box b : boxes)
-    {
-        if(b.isActive())
+        for (Box b : boxes)
         {
-            b.update();
+            if (b.isActive())
+            {
+                b.update();
+            }
         }
-    }
     }
 
 
@@ -112,13 +122,24 @@ public class ObjectManager
     {
         drawDiamonds(g, xLevelOffset);
         drawBoxes(g, xLevelOffset);
+        drawSpikes(g, xLevelOffset);
+    }
+
+    private void drawSpikes(Graphics g, int xLevelOffset)
+    {
+        for (Spike s : spikes)
+        {
+            g.drawImage(spikeImage, (int) (s.getHitbox().x - xLevelOffset), (int) (s.getHitbox().y - s.yDrawOffset),
+                    SPIKE_IMAGE_WIDTH, SPIKE_IMAGE_HEIGHT, null);
+            s.drawHitbox(g, xLevelOffset);
+        }
     }
 
     private void drawDiamonds(Graphics g, int xLevelOffset)
     {
-        for(Diamond d : diamonds)
+        for (Diamond d : diamonds)
         {
-            if(d.isActive())
+            if (d.isActive())
             {
                 g.drawImage(DNHAnimations[BIG_DIAMOND][d.getAniIndex()],
                         (int) d.getHitbox().x - xLevelOffset - DIAMOND_DRAW_OFFSET_X,
@@ -131,11 +152,11 @@ public class ObjectManager
 
     private void drawBoxes(Graphics g, int xLevelOffset)
     {
-        for(Box b : boxes)
+        for (Box b : boxes)
         {
-            if(b.isActive())
+            if (b.isActive())
             {
-                g.drawImage(BoxAnimations[b.getAniIndex()],
+                g.drawImage(boxAnimations[b.getAniIndex()],
                         (int) b.getHitbox().x - xLevelOffset - BOX_DRAW_OFFSET_X,
                         (int) b.getHitbox().y - BOX_DRAW_OFFSET_Y, BOX_IMAGE_WIDTH,
                         BOX_IMAGE_HEIGHT, null);
@@ -145,14 +166,14 @@ public class ObjectManager
     }
 
 
-
     public void resetAllObjects()
     {
-        for(Diamond d : diamonds)
+        loadObjects(playing.getLevelManager().getCurrentLevel());
+        for (Diamond d : diamonds)
         {
             d.reset();
         }
-        for(Box b : boxes)
+        for (Box b : boxes)
         {
             b.reset();
         }
@@ -160,7 +181,8 @@ public class ObjectManager
 
     public void loadObjects(Level newLevel)
     {
-        boxes = newLevel.getBoxes();
-        diamonds = newLevel.getDiamonds();
+        boxes = new ArrayList<>(newLevel.getBoxes());
+        diamonds = new ArrayList<>(newLevel.getDiamonds());
+        spikes = newLevel.getSpikes();
     }
 }

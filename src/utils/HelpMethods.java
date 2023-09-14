@@ -4,6 +4,7 @@ import entities.Pig;
 import main.Game;
 import objects.Box;
 import objects.Diamond;
+import objects.Spike;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -198,6 +199,24 @@ public class HelpMethods
                 if (value == BIG_DIAMOND)
                 {
                     list.add(new Diamond(i * Game.TILES_SIZE, j * Game.TILES_SIZE, BIG_DIAMOND));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Spike> GetSpikes(BufferedImage image)
+    {
+        ArrayList<Spike> list = new ArrayList<>();
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == SPIKE)
+                {
+                    list.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
                 }
             }
         }

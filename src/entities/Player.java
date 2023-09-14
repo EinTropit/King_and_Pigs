@@ -92,6 +92,7 @@ public class Player extends Entity
         if(moving)
         {
             checkDiamondTouched();
+            checkSpikesTouched();
         }
         if(attacking)
         {
@@ -99,6 +100,11 @@ public class Player extends Entity
         }
         updateAnimationTick();
         setAnimation();
+    }
+
+    private void checkSpikesTouched()
+    {
+        playing.checkSpikesTouched(this);
     }
 
     private void checkDiamondTouched()
@@ -164,6 +170,10 @@ public class Player extends Entity
         }
     }
 
+    public void kill()
+    {
+        currentHealth = 0;
+    }
 
     private void updateAnimationTick()
     {
@@ -391,5 +401,7 @@ public class Player extends Entity
     {
         System.out.println("added Score!");
     }
+
+
 }
 

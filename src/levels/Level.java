@@ -4,6 +4,7 @@ import entities.Pig;
 import main.Game;
 import objects.Box;
 import objects.Diamond;
+import objects.Spike;
 import utils.HelpMethods;
 
 import java.awt.*;
@@ -18,6 +19,7 @@ public class Level
     private int[][] levelData;
     private ArrayList<Pig> pigs;
     private ArrayList<Box> boxes;
+    private ArrayList<Spike> spikes;
     private ArrayList<Diamond> diamonds;
 
     private int levelTilesWide;
@@ -32,8 +34,14 @@ public class Level
         createEnemies();
         createBoxes();
         createDiamonds();
+        createSpikes();
         calculateLevelOffsetX();
         calculatePlayerSpawn();
+    }
+
+    private void createSpikes()
+    {
+        spikes = HelpMethods.GetSpikes(levelImage);
     }
 
     private void createDiamonds()
@@ -102,5 +110,10 @@ public class Level
     public ArrayList<Diamond> getDiamonds()
     {
         return diamonds;
+    }
+
+    public ArrayList<Spike> getSpikes()
+    {
+        return spikes;
     }
 }

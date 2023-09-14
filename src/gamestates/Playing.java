@@ -113,6 +113,11 @@ public class Playing extends State implements Statemethods
         objectManager.checkObjectTouched(hitbox);
     }
 
+    public void checkSpikesTouched(Player player)
+    {
+        objectManager.checkSpikesTouched(player);
+    }
+
     @Override
     public void update()
     {
@@ -313,6 +318,11 @@ public class Playing extends State implements Statemethods
     public ObjectManager getObjectManager()
     {
         return objectManager;
+    }
+
+    public LevelManager getLevelManager()
+    {
+        return levelManager;
     }
 
     public void setMaxLevelOffset(int levelOffset)
