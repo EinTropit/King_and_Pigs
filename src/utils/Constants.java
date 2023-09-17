@@ -15,10 +15,12 @@ public class Constants
         public static final int SMALL_DIAMOND = 7; //TODO: change back with box
         public static final int BIG_HEART = 3;
         public static final int BIG_HEART_HIT = 8; //TODO: change back with spike
-        public static final int SMALL_HEART = 5;
-        public static final int SMALL_HEART_HIT = 6;
+        public static final int SMALL_HEART = 9;  //TODO: change back with cannon
+        public static final int SMALL_HEART_HIT = 10; //TODO: change back with cannon
         public static final int BOX = 2;
         public static final int SPIKE = 4;
+        public static final int CANNON_LEFT = 5;
+        public static final int CANNON_RIGHT = 6;
 
         public static final int DNH_IMAGE_DEFAULT_WIDTH = 18;
         public static final int DNH_IMAGE_DEFAULT_HEIGHT = 14;
@@ -36,8 +38,15 @@ public class Constants
 
         public static final int SPIKE_IMAGE_DEFAULT_WIDTH = 32;
         public static final int SPIKE_IMAGE_DEFAULT_HEIGHT = 32;
-        public static final int SPIKE_IMAGE_WIDTH = (int) (BOX_IMAGE_DEFAULT_WIDTH * Game.SCALE);
-        public static final int SPIKE_IMAGE_HEIGHT = (int) (BOX_IMAGE_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int SPIKE_IMAGE_WIDTH = (int) (SPIKE_IMAGE_DEFAULT_WIDTH * Game.SCALE);
+        public static final int SPIKE_IMAGE_HEIGHT = (int) (SPIKE_IMAGE_DEFAULT_HEIGHT * Game.SCALE);
+
+        public static final int CANNON_IMAGE_DEFAULT_WIDTH = 44;
+        public static final int CANNON_IMAGE_DEFAULT_HEIGHT = 28;
+        public static final int CANNON_IMAGE_WIDTH = (int) (CANNON_IMAGE_DEFAULT_WIDTH * Game.SCALE);
+        public static final int CANNON_IMAGE_HEIGHT = (int) (CANNON_IMAGE_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int CANNON_DRAW_OFFSET_X = (int)(Game.SCALE * 17);
+        public static final int CANNON_DRAW_OFFSET_Y = (int)(Game.SCALE * 7);
 
         public static int GetSpriteAmount(int objectType)
         {
@@ -55,6 +64,9 @@ public class Constants
                 case BIG_DIAMOND_HIT:
                 case SMALL_HEART_HIT:
                     return 2;
+
+                case CANNON_LEFT, CANNON_RIGHT:
+                    return 5;
                 default:
                     return 1;
             }

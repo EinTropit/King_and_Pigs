@@ -1,8 +1,10 @@
 package objects;
 
+import entities.Pig;
 import entities.Player;
 import gamestates.Playing;
 import levels.Level;
+import main.Game;
 import utils.LoadSave;
 
 import java.awt.*;
@@ -10,7 +12,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import static utils.Constants.EnemyConstants.*;
 import static utils.Constants.ObjectConstants.*;
+import static utils.HelpMethods.CanCannonSeePlayer;
 
 public class ObjectManager
 {
@@ -18,9 +22,12 @@ public class ObjectManager
     private BufferedImage[][] DNHAnimations;
     private BufferedImage[] boxAnimations;
     private BufferedImage spikeImage;
+    private BufferedImage[] cannonAnimations;
+
     private ArrayList<Diamond> diamonds;
     private ArrayList<Box> boxes;
     private ArrayList<Spike> spikes;
+    private ArrayList<Cannon> cannons;
 
     public ObjectManager(Playing playing)
     {
@@ -88,18 +95,27 @@ public class ObjectManager
             }
         }
 
-        BufferedImage BoxSprite = LoadSave.GetSpriteAtlas(LoadSave.BOX_ATLAS);
+        BufferedImage boxSprite = LoadSave.GetSpriteAtlas(LoadSave.BOX_ATLAS);
         boxAnimations = new BufferedImage[8];
 
         for (int j = 0; j < boxAnimations.length; j++)
         {
-            boxAnimations[j] = BoxSprite.getSubimage(j * BOX_IMAGE_DEFAULT_WIDTH, 0, BOX_IMAGE_DEFAULT_WIDTH, BOX_IMAGE_DEFAULT_HEIGHT);
+            boxAnimations[j] = boxSprite.getSubimage(j * BOX_IMAGE_DEFAULT_WIDTH, 0, BOX_IMAGE_DEFAULT_WIDTH, BOX_IMAGE_DEFAULT_HEIGHT);
         }
 
         spikeImage = LoadSave.GetSpriteAtlas(LoadSave.SPIKE_ATLAS);
+
+        BufferedImage cannonSprite = LoadSave.GetSpriteAtlas(LoadSave.CANON_ATLAS);
+        cannonAnimations = new BufferedImage[5];
+
+        for (int j = 0; j < cannonAnimations.length; j++)
+        {
+            cannonAnimations[j] = cannonSprite.getSubimage(j * CANNON_IMAGE_DEFAULT_WIDTH, 0, CANNON_IMAGE_DEFAULT_WIDTH, CANNON_IMAGE_DEFAULT_HEIGHT);
+        }
+
     }
 
-    public void update()
+    public void update(int[][] levelData, Player player)
     {
         for (Diamond d : diamonds)
         {
@@ -115,6 +131,62 @@ public class ObjectManager
                 b.update();
             }
         }
+
+        updateCannons(levelData, player);
+    }
+
+    private void updateCannons(int[][] levelData, Player player)
+    {
+        System.out.println(player.getTileY());
+        for (Cannon c : cannons)
+        {
+            System.out.println(player.getTileY());
+            if(!c.doAnimation)
+            {
+                if (c.getTileY() == player.getTileY())
+                {
+                    if(isPlayerInRange(c, player))
+                    {
+                        if(isPlayerInFrontOfCannon(c, player))
+                        {
+                            if(CanCannonSeePlayer(levelData, player.getHitbox(), c.getHitbox(), c.getTileY()))
+                            {
+                                shootCannon(c);
+                            }
+                        }
+                    }
+                }
+            }
+            c.update();
+        }
+
+
+    }
+
+    private void shootCannon(Cannon c)
+    {
+        c.setAnimation(true);
+    }
+
+    private boolean isPlayerInFrontOfCannon(Cannon c, Player player)
+    {
+        if(c.getObjectType() == CANNON_LEFT)
+        {
+            if(c.getHitbox().x > player.getHitbox().x)
+            {
+                return true;
+            }
+        } else if (c.getHitbox().x < player.getHitbox().x)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isPlayerInRange(Cannon c, Player player)
+    {
+        int absValue = (int) Math.abs(player.getHitbox().x - c.getHitbox().x);
+        return absValue <= Game.TILES_SIZE * 5;
     }
 
 
@@ -123,13 +195,27 @@ public class ObjectManager
         drawDiamonds(g, xLevelOffset);
         drawBoxes(g, xLevelOffset);
         drawSpikes(g, xLevelOffset);
+        drawCannons(g, xLevelOffset);
+    }
+
+    private void drawCannons(Graphics g, int xLevelOffset)
+    {
+
+        for (Cannon c : cannons)
+        {
+            g.drawImage(cannonAnimations[c.getAniIndex()],
+                    (int) c.getHitbox().x - xLevelOffset - CANNON_DRAW_OFFSET_X + c.flipX(),
+                    (int) c.getHitbox().y - CANNON_DRAW_OFFSET_Y, CANNON_IMAGE_WIDTH * c.flipW(),
+                    PIG_IMAGE_HEIGHT, null);
+            c.drawHitbox(g, xLevelOffset);
+        }
     }
 
     private void drawSpikes(Graphics g, int xLevelOffset)
     {
         for (Spike s : spikes)
         {
-            g.drawImage(spikeImage, (int) (s.getHitbox().x - xLevelOffset), (int) (s.getHitbox().y - s.yDrawOffset),
+            g.drawImage(spikeImage, (int) (s.getHitbox().x - xLevelOffset), (int) (s.getHitbox().y - s.getYDrawOffset()),
                     SPIKE_IMAGE_WIDTH, SPIKE_IMAGE_HEIGHT, null);
             s.drawHitbox(g, xLevelOffset);
         }
@@ -177,6 +263,10 @@ public class ObjectManager
         {
             b.reset();
         }
+        for (Cannon c : cannons)
+        {
+            c.reset();
+        }
     }
 
     public void loadObjects(Level newLevel)
@@ -184,5 +274,6 @@ public class ObjectManager
         boxes = new ArrayList<>(newLevel.getBoxes());
         diamonds = new ArrayList<>(newLevel.getDiamonds());
         spikes = newLevel.getSpikes();
+        cannons = newLevel.getCannons();
     }
 }

@@ -3,6 +3,7 @@ package utils;
 import entities.Pig;
 import main.Game;
 import objects.Box;
+import objects.Cannon;
 import objects.Diamond;
 import objects.Spike;
 
@@ -106,31 +107,42 @@ public class HelpMethods
     }
 
 
-    public static boolean IsSightClear(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile)
-    {
-        int xTile1 = (int) (hitbox1.x / Game.TILES_SIZE);
-        int xTile2 = (int) (hitbox2.x / Game.TILES_SIZE);
-        int xTile = xTile1 > xTile2 ? xTile1 : xTile2;
+    public static boolean IsSightClear(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile) {
+        int firstXTile = (int) (hitbox1.x / Game.TILES_SIZE);
+        int secondXTile = (int) (hitbox2.x / Game.TILES_SIZE);
 
-        for (int i = 0; i < Math.abs(xTile1 - xTile2); i++)
-        {
-            if(xTile + i >= Game.TILES_IN_WIDTH)
-            {
-                break;
-            }
-            if(IsTileSolid(xTile + i, yTile, levelData))
-            {
+        if (firstXTile > secondXTile)
+            return IsAllTilesWalkable(secondXTile, firstXTile, yTile, levelData);
+        else
+            return IsAllTilesWalkable(firstXTile, secondXTile, yTile, levelData);
+    }
+
+    public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] levelData) {
+        for (int i = 0; i < xEnd - xStart; i++)
+            if (IsTileSolid(xStart + i, y, levelData))
                 return false;
-            }
-            if(!IsTileSolid(xTile + i, yTile + 1, levelData))
-            {
-                return false;
-            }
-        }
-
-
         return true;
     }
+
+    public static boolean IsAllTilesWalkable(int xStart, int xEnd, int y, int[][] levelData) {
+        if (IsAllTilesClear(xStart, xEnd, y, levelData))
+            for (int i = 0; i < xEnd - xStart; i++) {
+                if (!IsTileSolid(xStart + i, y + 1, levelData))
+                    return false;
+            }
+        return true;
+    }
+
+    public static boolean CanCannonSeePlayer(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile) {
+        int firstXTile = (int) (hitbox1.x / Game.TILES_SIZE);
+        int secondXTile = (int) (hitbox2.x / Game.TILES_SIZE);
+
+        if (firstXTile > secondXTile)
+            return IsAllTilesClear(secondXTile, firstXTile, yTile, levelData);
+        else
+            return IsAllTilesClear(firstXTile, secondXTile, yTile, levelData);
+    }
+
 
     public static int[][] GetLevelData(BufferedImage image)
     {
@@ -217,6 +229,24 @@ public class HelpMethods
                 if (value == SPIKE)
                 {
                     list.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Cannon> GetCannons(BufferedImage image)
+    {
+        ArrayList<Cannon> list = new ArrayList<>();
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
+                Color color = new Color(image.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == CANNON_LEFT || value == CANNON_RIGHT)
+                {
+                    list.add(new Cannon(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value));
                 }
             }
         }

@@ -3,6 +3,7 @@ package levels;
 import entities.Pig;
 import main.Game;
 import objects.Box;
+import objects.Cannon;
 import objects.Diamond;
 import objects.Spike;
 import utils.HelpMethods;
@@ -21,6 +22,7 @@ public class Level
     private ArrayList<Box> boxes;
     private ArrayList<Spike> spikes;
     private ArrayList<Diamond> diamonds;
+    private ArrayList<Cannon> cannons;
 
     private int levelTilesWide;
     private int maxTilesOffset;
@@ -35,8 +37,14 @@ public class Level
         createBoxes();
         createDiamonds();
         createSpikes();
+        createCannons();
         calculateLevelOffsetX();
         calculatePlayerSpawn();
+    }
+
+    private void createCannons()
+    {
+        cannons = HelpMethods.GetCannons(levelImage);
     }
 
     private void createSpikes()
@@ -115,5 +123,10 @@ public class Level
     public ArrayList<Spike> getSpikes()
     {
         return spikes;
+    }
+
+    public ArrayList<Cannon> getCannons()
+    {
+        return cannons;
     }
 }

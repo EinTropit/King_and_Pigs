@@ -28,7 +28,7 @@ public class Game implements Runnable
     public static final int GAME_HEIGHT = TILES_IN_HEIGHT * TILES_SIZE;
 
     //debugging
-    public static final  boolean drawHitbox = false;
+    public static final  boolean drawHitbox = true;
     public static final  boolean drawAttackBox = false;
 
 

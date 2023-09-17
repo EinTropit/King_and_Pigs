@@ -33,6 +33,7 @@ public class LoadSave
     public static final String BOX_ATLAS = "box.png";
     public static final String LIVES_AND_DIAMONDS = "lives_and_diamonds.png";
     public static final String SPIKE_ATLAS = "Spikes.png";
+    public static final String CANON_ATLAS = "cannon.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName)
     {

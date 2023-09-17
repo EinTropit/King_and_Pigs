@@ -37,6 +37,9 @@ public class GameObject
                 {
                     doAnimation = false;
                     active = false;
+                } else if (objectType == CANNON_LEFT || objectType == CANNON_RIGHT)
+                {
+                    doAnimation = false;
                 }
             }
         }
@@ -48,7 +51,7 @@ public class GameObject
         aniTick = 0;
         active = true;
 
-        if (objectType == BOX)
+        if (objectType == BOX || objectType == CANNON_LEFT || objectType == CANNON_RIGHT)
         {
             doAnimation = false;
         } else

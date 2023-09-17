@@ -46,6 +46,8 @@ public class Player extends Entity
     private int flipX = 0;
     private int flipW = 1;
 
+    private int tileY = 0;
+
     private boolean attackChecked;
     private Playing playing;
 
@@ -93,6 +95,7 @@ public class Player extends Entity
         {
             checkDiamondTouched();
             checkSpikesTouched();
+            tileY = (int)(hitbox.y / Game.TILES_SIZE);
         }
         if(attacking)
         {
@@ -402,6 +405,10 @@ public class Player extends Entity
         System.out.println("added Score!");
     }
 
+    public int getTileY()
+    {
+        return tileY;
+    }
 
 }
 
