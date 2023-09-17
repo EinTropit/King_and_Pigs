@@ -14,7 +14,9 @@ import java.util.ArrayList;
 
 import static utils.Constants.EnemyConstants.*;
 import static utils.Constants.ObjectConstants.*;
+import static utils.Constants.Projectiles.*;
 import static utils.HelpMethods.CanCannonSeePlayer;
+import static utils.HelpMethods.IsProjectileHittingLevel;
 
 public class ObjectManager
 {
@@ -23,11 +25,13 @@ public class ObjectManager
     private BufferedImage[] boxAnimations;
     private BufferedImage spikeImage;
     private BufferedImage[] cannonAnimations;
+    private BufferedImage cannonBallImage;
 
     private ArrayList<Diamond> diamonds;
     private ArrayList<Box> boxes;
     private ArrayList<Spike> spikes;
     private ArrayList<Cannon> cannons;
+    private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public ObjectManager(Playing playing)
     {
@@ -113,6 +117,7 @@ public class ObjectManager
             cannonAnimations[j] = cannonSprite.getSubimage(j * CANNON_IMAGE_DEFAULT_WIDTH, 0, CANNON_IMAGE_DEFAULT_WIDTH, CANNON_IMAGE_DEFAULT_HEIGHT);
         }
 
+        cannonBallImage = LoadSave.GetSpriteAtlas(LoadSave.CANON_BALL_ATLAS);
     }
 
     public void update(int[][] levelData, Player player)
@@ -133,14 +138,33 @@ public class ObjectManager
         }
 
         updateCannons(levelData, player);
+
+        updateProjectiles(levelData, player);
+    }
+
+    private void updateProjectiles(int[][] levelData, Player player)
+    {
+        for (Projectile p : projectiles)
+        {
+            if (p.isActive())
+            {
+                p.updatePos();
+                if(p.getHitbox().intersects(player.getHitbox()))
+                {
+                    player.changeHealth(-25);
+                    p.setActive(false);
+                } else if (IsProjectileHittingLevel(p, levelData))
+                {
+                    p.setActive(false);
+                }
+            }
+        }
     }
 
     private void updateCannons(int[][] levelData, Player player)
     {
-        System.out.println(player.getTileY());
         for (Cannon c : cannons)
         {
-            System.out.println(player.getTileY());
             if(!c.doAnimation)
             {
                 if (c.getTileY() == player.getTileY())
@@ -151,13 +175,17 @@ public class ObjectManager
                         {
                             if(CanCannonSeePlayer(levelData, player.getHitbox(), c.getHitbox(), c.getTileY()))
                             {
-                                shootCannon(c);
+                                c.setAnimation(true);
                             }
                         }
                     }
                 }
             }
             c.update();
+            if(c.getAniIndex() == 1 && c.getAniTick() == 0)
+            {
+                shootCannon(c);
+            }
         }
 
 
@@ -165,7 +193,11 @@ public class ObjectManager
 
     private void shootCannon(Cannon c)
     {
-        c.setAnimation(true);
+
+        int dir = 1;
+        if(c.getObjectType() == CANNON_LEFT)
+            dir = -1;
+        projectiles.add(new Projectile((int) c.getHitbox().x, (int) c.getHitbox().y, dir));
     }
 
     private boolean isPlayerInFrontOfCannon(Cannon c, Player player)
@@ -196,6 +228,21 @@ public class ObjectManager
         drawBoxes(g, xLevelOffset);
         drawSpikes(g, xLevelOffset);
         drawCannons(g, xLevelOffset);
+        drawProjectiles(g, xLevelOffset);
+    }
+
+    private void drawProjectiles(Graphics g, int xLevelOffset)
+    {
+        for (Projectile p : projectiles)
+        {
+            if (p.isActive())
+            {
+                g.drawImage(cannonBallImage, (int) (p.getHitbox().x - xLevelOffset - CANNON_BALL_DRAW_OFFSET_X),
+                        (int) (p.getHitbox().y - CANNON_BALL_DRAW_OFFSET_Y),
+                        CANNON_BALL_IMAGE_WIDTH, CANNON_BALL_IMAGE_HEIGHT, null);
+                p.drawHitbox(g, xLevelOffset);
+            }
+        }
     }
 
     private void drawCannons(Graphics g, int xLevelOffset)
@@ -206,7 +253,7 @@ public class ObjectManager
             g.drawImage(cannonAnimations[c.getAniIndex()],
                     (int) c.getHitbox().x - xLevelOffset - CANNON_DRAW_OFFSET_X + c.flipX(),
                     (int) c.getHitbox().y - CANNON_DRAW_OFFSET_Y, CANNON_IMAGE_WIDTH * c.flipW(),
-                    PIG_IMAGE_HEIGHT, null);
+                    CANNON_IMAGE_HEIGHT, null);
             c.drawHitbox(g, xLevelOffset);
         }
     }
@@ -275,5 +322,6 @@ public class ObjectManager
         diamonds = new ArrayList<>(newLevel.getDiamonds());
         spikes = newLevel.getSpikes();
         cannons = newLevel.getCannons();
+        projectiles.clear();
     }
 }

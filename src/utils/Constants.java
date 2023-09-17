@@ -8,6 +8,22 @@ public class Constants
     public static final float GRAVITY = 0.04f * Game.SCALE;
     public static final float ANIMATION_SPEED = 10;
 
+    public static class Projectiles
+    {
+        public static final int CANNON_BALL_IMAGE_DEFAULT_WIDTH = 44;
+        public static final int CANNON_BALL_IMAGE_DEFAULT_HEIGHT = 28;
+        public static final int CANNON_BALL_IMAGE_WIDTH = (int) (CANNON_BALL_IMAGE_DEFAULT_WIDTH * Game.SCALE);
+        public static final int CANNON_BALL_IMAGE_HEIGHT = (int) (CANNON_BALL_IMAGE_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int CANNON_BALL_DRAW_OFFSET_X = (int)(Game.SCALE * 23);
+        public static final int CANNON_BALL_DRAW_OFFSET_Y = (int)(Game.SCALE * 13);
+
+        public static final int CANNON_BALL_HITBOX_WIDTH = 12;
+        public static final int CANNON_BALL_HITBOX_HEIGHT = 12;
+
+        public static final float SPEED = Game.SCALE * 0.75f;
+
+    }
+
     public static class ObjectConstants
     {
         public static final int BIG_DIAMOND = 0;

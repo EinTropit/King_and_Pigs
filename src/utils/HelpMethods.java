@@ -2,10 +2,7 @@ package utils;
 
 import entities.Pig;
 import main.Game;
-import objects.Box;
-import objects.Cannon;
-import objects.Diamond;
-import objects.Spike;
+import objects.*;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -46,7 +43,7 @@ public class HelpMethods
         float xIndex = x / Game.TILES_SIZE;
         float yIndex = y / Game.TILES_SIZE;
 
-        return IsTileSolid((int) xIndex ,(int) yIndex ,levelData);
+        return IsTileSolid((int) xIndex, (int) yIndex, levelData);
     }
 
     private static boolean IsTileSolid(int xTile, int yTile, int[][] levelData)
@@ -55,6 +52,11 @@ public class HelpMethods
         if (value >= 48 || value < 0 || value == 11)
             return false;
         return true;
+    }
+
+    public static boolean IsProjectileHittingLevel(Projectile p, int[][] levelData)
+    {
+        return IsSolid(p.getHitbox().x + p.getHitbox().width / 2, p.getHitbox().y + p.getHitbox().height / 2, levelData);
     }
 
     public static float GetEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed)
@@ -107,7 +109,8 @@ public class HelpMethods
     }
 
 
-    public static boolean IsSightClear(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile) {
+    public static boolean IsSightClear(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile)
+    {
         int firstXTile = (int) (hitbox1.x / Game.TILES_SIZE);
         int secondXTile = (int) (hitbox2.x / Game.TILES_SIZE);
 
@@ -117,23 +120,27 @@ public class HelpMethods
             return IsAllTilesWalkable(firstXTile, secondXTile, yTile, levelData);
     }
 
-    public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] levelData) {
+    public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] levelData)
+    {
         for (int i = 0; i < xEnd - xStart; i++)
             if (IsTileSolid(xStart + i, y, levelData))
                 return false;
         return true;
     }
 
-    public static boolean IsAllTilesWalkable(int xStart, int xEnd, int y, int[][] levelData) {
+    public static boolean IsAllTilesWalkable(int xStart, int xEnd, int y, int[][] levelData)
+    {
         if (IsAllTilesClear(xStart, xEnd, y, levelData))
-            for (int i = 0; i < xEnd - xStart; i++) {
+            for (int i = 0; i < xEnd - xStart; i++)
+            {
                 if (!IsTileSolid(xStart + i, y + 1, levelData))
                     return false;
             }
         return true;
     }
 
-    public static boolean CanCannonSeePlayer(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile) {
+    public static boolean CanCannonSeePlayer(int[][] levelData, Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2, int yTile)
+    {
         int firstXTile = (int) (hitbox1.x / Game.TILES_SIZE);
         int secondXTile = (int) (hitbox2.x / Game.TILES_SIZE);
 
