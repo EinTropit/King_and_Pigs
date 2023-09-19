@@ -35,6 +35,7 @@ public class LoadSave
     public static final String SPIKE_ATLAS = "Spikes.png";
     public static final String CANON_ATLAS = "cannon.png";
     public static final String CANON_BALL_ATLAS = "cannon_ball.png";
+    public static final String DEATH_SCREEN_BG = "death_screen.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName)
     {

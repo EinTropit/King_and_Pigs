@@ -32,6 +32,7 @@ public class Playing extends State implements Statemethods
     private int maxLevelOffsetX;
     private boolean gameOver = false;
     private boolean levelCompleted = false;
+    private boolean playerDying = false;
 
     public Playing(Game game)
     {
@@ -89,6 +90,7 @@ public class Playing extends State implements Statemethods
         paused = false;
         levelCompleted = false;
         player.resetAll();
+        playerDying = false;
         enemyManager.resetAllEnemies();
         objectManager.resetAllObjects();
     }
@@ -128,8 +130,15 @@ public class Playing extends State implements Statemethods
         else if (levelCompleted)
         {
             levelCompletedOverlay.update();
+        } else if (gameOver)
+        {
+            gameOverOverlay.update();
         }
-        else if (!gameOver)
+        else if (playerDying)
+        {
+            player.update();
+        }
+        else
         {
             levelManager.update();
             objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
@@ -208,6 +217,10 @@ public class Playing extends State implements Statemethods
                 levelCompletedOverlay.mousePressed(e);
             }
         }
+        else
+        {
+            gameOverOverlay.mousePressed(e);
+        }
     }
 
     @Override
@@ -224,6 +237,10 @@ public class Playing extends State implements Statemethods
                 levelCompletedOverlay.mouseReleased(e);
             }
         }
+        else
+        {
+            gameOverOverlay.mouseReleased(e);
+        }
     }
 
     @Override
@@ -239,6 +256,10 @@ public class Playing extends State implements Statemethods
             {
                 levelCompletedOverlay.mouseMoved(e);
             }
+        }
+        else
+        {
+            gameOverOverlay.mouseMoved(e);
         }
     }
 
@@ -336,5 +357,8 @@ public class Playing extends State implements Statemethods
     }
 
 
-
+    public void setPlayerDying(boolean playerDying)
+    {
+        this.playerDying = playerDying;
+    }
 }
