@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 public class Menu extends State implements Statemethods
 {
     private MenuButton[] buttons = new MenuButton[3];
-    private BufferedImage backgroundImg;
+    private BufferedImage menuBackgroundImg;
     private int menuX, menuY, menuWidth, menuHeight;
 
     public Menu(Game game)
@@ -24,9 +24,9 @@ public class Menu extends State implements Statemethods
 
     private void loadBackground()
     {
-        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BG);
-        menuWidth = (int) (backgroundImg.getWidth() * Game.SCALE);
-        menuHeight = (int) (backgroundImg.getHeight() * Game.SCALE);
+        menuBackgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BG);
+        menuWidth = (int) (menuBackgroundImg.getWidth() * Game.SCALE);
+        menuHeight = (int) (menuBackgroundImg.getHeight() * Game.SCALE);
         menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
         menuY = (int) (45 * Game.SCALE);
     }
@@ -51,7 +51,7 @@ public class Menu extends State implements Statemethods
     @Override
     public void draw(Graphics g)
     {
-        g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
+        g.drawImage(menuBackgroundImg, menuX, menuY, menuWidth, menuHeight, null);
         for (MenuButton mb : buttons)
         {
             mb.draw(g);
